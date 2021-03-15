@@ -1,0 +1,84 @@
+BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
+        MadDictionary dictionary = new MadDictionary();
+        LinkedList<String> story =  new LinkedList<String>();
+        String[] words;
+        ObjectOutputStream out;
+        ObjectInputStream in;
+        
+        String fileName;
+        String storyLines;
+        StringBuffer madDef;
+        String dictionaryFileName = "MadDictionary.dat";
+        File file = new File(dictionaryFileName);
+        
+        if (file.exists())
+        {
+            in = new ObjectInputStream(new FileInputStream(dictionaryFileName));
+            dictionary = (MadDictionary) in.readObject();
+            in.close();
+        }        
+               
+        System.out.print("Enter a file name that contains your MadLibs ");
+        
+        fileName = keyboard.readLine();
+        
+        InputDataFile   datafile;
+        datafile = new InputDataFile(fileName);
+        datafile.open();
+        
+        if (!datafile.isOpen())
+        {
+            System.out.println("Cannot open " + datafile.getName() + " for reading. Program ending. ");
+            System.exit(1);
+        }
+        
+        else
+        {
+            storyLines = datafile.readString();
+            while (storyLines != null)
+            { 
+                words = storyLines.split(" ");
+                
+                for (int i = 0; i < words.length; i++)
+                {
+                    if (words[i].startsWith("["))
+                    {
+                        madDef = lookupWord(words[i], dictionary, keyboard);
+                        System.out.println("The MadDefinition for " + words[i] +  " is " + madDef);
+                        System.out.println();
+                    }
+                }
+                
+                List wordList = Arrays.asList(words);
+                story.addAll(wordList);
+                storyLines = datafile.readString();
+            }
+            
+            datafile.close();
+        }
+        
+        dictionary.print();
+        
+        out =  new ObjectOutputStream(new FileOutputStream(dictionaryFileName));
+        out.writeObject(dictionary);
+        out.close();
+        
+  
+        
+    }
+    
+    public static StringBuffer lookupWord(String word, MadDictionary d, BufferedReader keyboard) throws IOException
+    {
+        String str;
+        StringBuffer definition;
+        
+        definition = d.getDescription(word);
+        if (definition != null)
+            return definition;
+            
+        System.out.print("Word: " + word + " not in MadDictionary. Pleae enter the description: ");
+        str = keyboard.readLine();
+        definition = new StringBuffer(str);
+        d.addWord(word, definition);
+        
+        return definition;

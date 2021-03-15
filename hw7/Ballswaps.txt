@@ -1,0 +1,13 @@
+#Assuming that there are two types of balls, blue to the left and red to the right
+
+1. Start from the middle empty slot.
+- move the first blue ball left from the middle one step to the right
+- move the first red ball right from the middle 2 spaces to the left
+- 
+
+
+2. Move one step Left
+
+3. Move one Step to the Right
+
+4

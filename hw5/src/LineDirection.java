@@ -1,0 +1,1 @@
+public enum LineDirection {VERTICAL, HORIZONTAL};
